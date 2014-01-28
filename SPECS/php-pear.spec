@@ -1,3 +1,5 @@
+%{?scl:%scl_package php-pear}
+%{!?scl:%global pkg_name %{name}}
 
 %global peardir %{_datadir}/pear
 
@@ -7,14 +9,11 @@
 %global structver 1.0.2
 %global xmlutil   1.2.1
 
-%define php_base php54
 %define basever 1.9
-%define real_name php-pear
-%define name %{php_base}-pear
 Summary: PHP Extension and Application Repository framework
-Name: %{name}
+Name: %{?scl_prefix}php-pear
 Version: 1.9.4
-Release: 2.ius%{?dist}
+Release: 3.ius%{?dist}
 Epoch: 1
 License: PHP
 Group: Development/Languages
@@ -37,25 +36,13 @@ Source24: http://pear.php.net/get/XML_Util-%{xmlutil}.tgz
 
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires: %{php_base}-cli, %{php_base}-xml, gnupg
-Provides: php-pear(Console_Getopt) = %{getoptver}
-Provides: php-pear(Archive_Tar) = %{arctarver}
-Provides: php-pear(PEAR) = %{version}
-Provides: php-pear(Structures_Graph) = %{structver}
-Provides: php-pear(XML_RPC) = %{xmlrpcver}
-Provides: php-pear(XML_Util) = %{xmlutil}
-Provides: %{php_base}-pear(Console_Getopt) = %{getoptver}
-Provides: %{php_base}-pear(Archive_Tar) = %{arctarver}
-Provides: %{php_base}-pear(PEAR) = %{version}
-Provides: %{php_base}-pear(Structures_Graph) = %{structver}
-Provides: %{php_base}-pear(XML_RPC) = %{xmlrpcver}
-Provides: %{php_base}-pear(XML_Util) = %{xmlutil}
-Provides: %{php_base}-pear-XML-Util = %{xmlutil}-%{release}
-Requires: %{php_base}-cli
-
-# IUS Stuff
-Provides: %{real_name} = %{version}
-Conflicts: %{real_name} < %{basever}
+BuildRequires: %{?scl_prefix}php-cli, %{?scl_prefix}php-xml, gnupg
+Provides: %{?scl_prefix}php-pear(Console_Getopt) = %{getoptver}
+Provides: %{?scl_prefix}php-pear(Archive_Tar) = %{arctarver}
+Provides: %{?scl_prefix}php-pear(PEAR) = %{version}
+Provides: %{?scl_prefix}php-pear(Structures_Graph) = %{structver}
+Provides: %{?scl_prefix}php-pear(XML_RPC) = %{xmlrpcver}
+Provides: %{?scl_prefix}php-pear(XML_Util) = %{xmlutil}
 
 # FIX ME: Should be removed before/after RHEL 5.6 is out
 # See: https://bugs.launchpad.net/ius/+bug/691755
@@ -66,7 +53,7 @@ PEAR is a framework and distribution system for reusable PHP
 components.  This package contains the basic PEAR components.
 
 %prep
-%setup -cT -n %{real_name}-%{version}
+%setup -cT -n %{name}-%{version}
 
 # Create a usable PEAR directory (used by install-pear.php)
 for archive in %{SOURCE0} %{SOURCE21} %{SOURCE22} %{SOURCE23} %{SOURCE24}
@@ -87,7 +74,7 @@ rm -rf $RPM_BUILD_ROOT
 
 export PHP_PEAR_SYSCONF_DIR=%{_sysconfdir}
 export PHP_PEAR_SIG_KEYDIR=%{_sysconfdir}/pearkeys
-export PHP_PEAR_SIG_BIN=%{_bindir}/gpg
+export PHP_PEAR_SIG_BIN=%{_root_bindir}/gpg
 export PHP_PEAR_INSTALL_DIR=%{peardir}
 
 # 1.4.11 tries to write to the cache directory during installation
@@ -176,6 +163,9 @@ rm new-pear.conf
 
 
 %changelog
+* Tue Jan 28 2014 Mark McKinstry <mmckinst@nexcess.net> - 1:1.9.4-3.ius
+- convert to scl style rpm
+
 * Tue Aug 21 2012 Jeffrey Ness <jeffrey.ness@rackspace.com> - 1:1.9.4-2.ius
 - Rebuilding against php54-5.4.6-2.ius as it is now using bundled PCRE.
 
