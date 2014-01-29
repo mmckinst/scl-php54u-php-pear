@@ -104,6 +104,10 @@ export INSTALL_ROOT=$RPM_BUILD_ROOT
 install -m 755 %{SOURCE10} $RPM_BUILD_ROOT%{_bindir}/pear
 install -m 755 %{SOURCE11} $RPM_BUILD_ROOT%{_bindir}/pecl
 install -m 755 %{SOURCE12} $RPM_BUILD_ROOT%{_bindir}/peardev
+for exe in pear pecl peardev; do
+    sed -e 's:/usr:%{_prefix}:' \
+        -i $RPM_BUILD_ROOT%{_bindir}/$exe
+done
 
 # Sanitize the pear.conf
 %{_bindir}/php -n %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/pear.conf $RPM_BUILD_ROOT | 
@@ -163,7 +167,7 @@ rm new-pear.conf
 
 
 %changelog
-* Tue Jan 28 2014 Mark McKinstry <mmckinst@nexcess.net> - 1:1.9.4-3.ius
+* Tue Jan 29 2014 Mark McKinstry <mmckinst@nexcess.net> - 1:1.9.4-3.ius
 - convert to scl style rpm
 
 * Tue Aug 21 2012 Jeffrey Ness <jeffrey.ness@rackspace.com> - 1:1.9.4-2.ius
